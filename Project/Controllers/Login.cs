@@ -61,8 +61,8 @@ namespace Project.Controllers
                 
                 return BadRequest("Username is already taken.");
             }
-            if(userObj.password.Length<6){
-                return BadRequest("Password is too short!");
+            if(userObj.password.Length<4){
+                return BadRequest("Password should be of minimum 6 characters!");
             }
             
             _context.user.Add(userObj);

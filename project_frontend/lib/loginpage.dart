@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:project_frontend/signup_page.dart';
+import 'package:project_frontend/taskpage.dart';
 import 'networking_api.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class loginpage extends StatefulWidget {
   const loginpage({Key? key}) : super(key: key);
@@ -14,7 +18,10 @@ class loginpage extends StatefulWidget {
 class _loginpageState extends State<loginpage> {
   TextEditingController usernamecontroller = TextEditingController();
   TextEditingController passwordcontroller = TextEditingController();
+  var result;
   var logintoken;
+  
+  bool isAuthentication = true;
 
   @override
   Widget build(BuildContext context) {
@@ -70,8 +77,21 @@ class _loginpageState extends State<loginpage> {
               right: 200,
               child: ElevatedButton(
                 onPressed: () async {
-                  logintoken = authenticateUser(
+                  result = await authenticateUser(
                       usernamecontroller.text, passwordcontroller.text);
+                 
+                  setState(() {
+                    if (result is Authentication) {
+                      isAuthentication = true;
+                      logintoken=result.Token;
+                    } else {
+                      isAuthentication = false;
+                    }
+                  });
+                  if (isAuthentication && logintoken!=null) {
+                    Get.toNamed("/tasks", arguments: logintoken);
+                  }
+                 
                 },
                 child: Text("press me"),
               )),
@@ -82,9 +102,8 @@ class _loginpageState extends State<loginpage> {
               child: MouseRegion(
                 cursor: SystemMouseCursors.click,
                 child: GestureDetector(
-                  
-                  onTap: (){
-                    Get.to(signup());
+                  onTap: () {
+                    Get.toNamed("/signup");
                   },
                   child: RichText(
                     text: TextSpan(
@@ -100,9 +119,17 @@ class _loginpageState extends State<loginpage> {
                     ),
                   ),
                 ),
-              ))
+              )),
+          Positioned(
+            top: 600,
+            left: 270,
+            right: 270,
+            child:
+                Text(isAuthentication ? result?.Message ?? '' : result ?? ''),
+          )
         ],
       ),
     );
   }
 }
+//
