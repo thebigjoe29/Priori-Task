@@ -5,12 +5,12 @@ public class user
     [Key]
     public int userId { get; set; }
 
-    [Required]
+   // [Required]
     [StringLength(255)]
     
     public string username { get; set; }
 
-    [Required]
+    //[Required]
     [StringLength(255)]
     public string password { get; set; }
 

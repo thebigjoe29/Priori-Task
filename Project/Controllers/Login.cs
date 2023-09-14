@@ -30,7 +30,7 @@ namespace Project.Controllers
                 }),
                 Audience = configuration["JwtSettings:Audience"],
                 Issuer = configuration["JwtSettings:Issuer"],
-                Expires = DateTime.UtcNow.AddHours(1), // Set token expiration time
+                Expires = DateTime.UtcNow.AddHours(10), // Set token expiration time
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -55,6 +55,9 @@ namespace Project.Controllers
         public IActionResult post([FromBody] user userObj)
         {
             var existingUser = _context.user.FirstOrDefault(u => u.username == userObj.username);
+            if(string.IsNullOrEmpty( userObj.username)  ||string.IsNullOrEmpty( userObj.password)){
+                return BadRequest("Username and Password field cannot be empty");
+            }
 
             if (existingUser != null)
             {
@@ -62,12 +65,13 @@ namespace Project.Controllers
                 return BadRequest("Username is already taken.");
             }
             if(userObj.password.Length<4){
-                return BadRequest("Password should be of minimum 6 characters!");
+                return BadRequest("Password should be of minimum 4 characters!");
             }
+            
             
             _context.user.Add(userObj);
             _context.SaveChanges();
-            return Ok("You're all set! Welcome "+userObj.username+".");
+            return Ok("You're all set! Hello "+userObj.username+".");
         }
 
         [HttpPost("Authentication")]
@@ -75,13 +79,18 @@ namespace Project.Controllers
         {
 
             var userObj = _context.user.FirstOrDefault(p => p.username == loginObj.username);
-            if (userObj != null)
+           // 
             {
+                 if(string.IsNullOrEmpty( loginObj.username)  ||string.IsNullOrEmpty( loginObj.password)){
+                return BadRequest("Username and Password field cannot be empty");
+            }
+                if(userObj!=null){
+
                 if (userObj.password == loginObj.password)
                 {
 
                     var token = GenerateJwtToken(loginObj.username, configuration, userObj.userId);
-                    return Ok(new { Token = token, Message = "You have logged in successfully" });
+                    return Ok(new { Token = token, Message = "You have logged in successfully! Welcome back "+loginObj.username.ToUpper(),Name=userObj.firstname});
                 }
                 else
                 {
@@ -100,4 +109,4 @@ namespace Project.Controllers
 
 
 
-}
+}}

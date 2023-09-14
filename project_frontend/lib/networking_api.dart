@@ -7,11 +7,18 @@ String urlsignup = "http://localhost:5042/LoginPage/Signup";
 String urltasks = "http://localhost:5042/Task/getUserTask";
 var token;
 var message;
+var name;
+class signupstate{
+  final success;
+  final data;
+  signupstate(this.success,this.data);
+}
 
 class Authentication {
   final Token;
   final Message;
-  Authentication(this.Token, this.Message);
+  final Name;
+  Authentication(this.Token, this.Message,this.Name);
 }
 class Taskobjects{
   final taskId;
@@ -37,7 +44,16 @@ Future signupUser(String user, String pass, String firstname) async {
     );
 
     var data = response.body;
-    return (data);
+   
+    if(response.statusCode==200){
+      signupstate obj=signupstate(true, data);
+      return obj;
+    }
+    else{
+      signupstate obj=signupstate(false, data);
+      return obj;
+    }
+    
   } catch (e) {
     print(e);
   }
@@ -61,7 +77,8 @@ Future authenticateUser(String user, String pass) async {
     if (response.statusCode == 200) {
       token = jsonDecode(data)["token"];
       message = jsonDecode(data)["message"];
-      Authentication authobj = Authentication(token, message);
+      name=jsonDecode(data)["name"];
+      Authentication authobj = Authentication(token, message,name);
       return authobj;
     } else {
       return data;
