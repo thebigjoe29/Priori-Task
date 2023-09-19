@@ -278,7 +278,7 @@ class _loginpageState extends State<loginpage> {
                       style: TextStyle(
                         fontFamily: 'Myfont',
                       ),
-                      children: <TextSpan>[
+                      children: [
                         TextSpan(
                           text: "Sign up",
                           style: TextStyle(
@@ -291,22 +291,7 @@ class _loginpageState extends State<loginpage> {
                   ),
                 ),
               )),
-          // Positioned(
-          //   top: 600,
-          //   left: 0,
-          //   right: 0,
-          //   child: Center(
-          //       child: AnimatedSwitcher(
-          //           duration: Duration(milliseconds: 300),
-          //           child: showMessage
-          //               ? Text(
-          //                   isAuthentication
-          //                       ? result?.Message ?? ''
-          //                       : result ?? '',
-          //                   style: TextStyle(fontFamily: "Myfont"),
-          //                 )
-          //               : SizedBox.shrink())),
-          // )
+          
         ],
       ),
     );

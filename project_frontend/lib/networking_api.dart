@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 String urllogin = "http://localhost:5042/LoginPage/Authentication";
 String urlsignup = "http://localhost:5042/LoginPage/Signup";
 String urltasks = "http://localhost:5042/Task/getUserTask";
+String urladdtask="http://localhost:5042/Task/insertUserTask";
 var token;
 var message;
 var name;
@@ -115,6 +116,41 @@ Future getTasks(String headerToken) async {
     print(e);
   }
 }
+
+
+Future addTask(String headerToken,String title,String description,DateTime dueDate)async{
+  try{
+    var url=Uri.parse(urladdtask);
+    var headers = {
+      'Authorization': 'Bearer $headerToken', 
+      'Content-Type': 'application/json',// Add the Bearer token here
+    };
+
+    var response=await http.post(url,headers: headers,body: jsonEncode(
+      {
+        'title': title,
+        'description': description,
+        'dueDate':dueDate.toIso8601String(),
+      }),);
+      if(response.statusCode==200){
+        return true;
+      }
+      else{
+        return false;
+      }
+
+  }
+  catch(e){
+    print(e);
+  }
+}
+// void main()async{
+//   String poop="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InN0cmluZyIsImVtYWlsIjoiOCIsIm5iZiI6MTY5NTA3MTYwMCwiZXhwIjoxNjk1MTA3NjAwLCJpYXQiOjE2OTUwNzE2MDAsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTA0MiIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTA0MiJ9.a-JfXbfL3YTRIWIvdvlyesDZrZKtHyf1IPt8hmaLZ1E";
+//   DateTime datetime = DateTime(2003, 05, 29);
+
+//   var jadu= await addTask(poop, "title", "description",datetime);
+//   print(jadu);
+// }
 
 // void main () async{
 // List <Taskobjects> tasks=[];

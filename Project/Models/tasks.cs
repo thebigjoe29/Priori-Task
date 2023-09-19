@@ -11,6 +11,7 @@ public class tasks
 
     public string description { get; set; }
 
+    [DataType(DataType.Date)] 
     public DateTime? dueDate { get; set; }
 
     public bool iscompleted { get; set; }=false;

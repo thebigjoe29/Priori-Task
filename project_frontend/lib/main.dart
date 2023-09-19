@@ -18,16 +18,17 @@ class MyApp extends StatelessWidget {
       defaultTransition: Transition.leftToRight,
       //customTransition: Transition.fade,
       //initialRoute: "/tasks",
-      initialRoute: "/",
+      //initialRoute: "/tasks",
+      home: Tasks(),
       debugShowCheckedModeBanner: false,
-       routes: {
-        "/": (context) => loginpage(), // Define your login page route
-        "/signup": (context) => signup(), 
+  //      routes: {
+  //       "/": (context) => loginpage(), // Define your login page route
+  //       "/signup": (context) => signup(), 
   //       "/tasks": (context) {
   //   final logintoken = ModalRoute.of(context)?.settings.arguments;
   //   return Tasks(logintoken);
   // }, 
-      },
+  //     },
      
     );
   }
