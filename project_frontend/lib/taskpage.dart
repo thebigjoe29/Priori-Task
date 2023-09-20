@@ -26,8 +26,8 @@ class _TasksState extends State<Tasks> {
       text.clear();
     });
   }
-  DateTime selectedDate = DateTime.now();
 
+  DateTime selectedDate = DateTime.now();
 
   void _showDialog(BuildContext context) {
     showDialog(
@@ -35,7 +35,6 @@ class _TasksState extends State<Tasks> {
       builder: (BuildContext context) {
         return Stack(
           children: [
-           
             BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
               child: Container(
@@ -96,13 +95,12 @@ class _TasksState extends State<Tasks> {
                     Container(
                       width: 390,
                       child: TextField(
-                         cursorColor: Colors.black,
-                       
+                        cursorColor: Colors.black,
                         controller: title,
                         decoration: InputDecoration(
-                          
                           hintText: "Required",
-                          hintStyle: TextStyle(fontStyle: FontStyle.italic,fontSize: 14),
+                          hintStyle: TextStyle(
+                              fontStyle: FontStyle.italic, fontSize: 14),
                           suffixIcon: GestureDetector(
                               onTap: () {
                                 clearField(title);
@@ -140,7 +138,8 @@ class _TasksState extends State<Tasks> {
                         expands: true,
                         decoration: InputDecoration(
                           hintText: "Optional",
-                          hintStyle: TextStyle(fontStyle: FontStyle.italic,fontSize: 14),
+                          hintStyle: TextStyle(
+                              fontStyle: FontStyle.italic, fontSize: 14),
                           suffixIcon: GestureDetector(
                               onTap: () {
                                 clearField(description);
@@ -168,50 +167,50 @@ class _TasksState extends State<Tasks> {
                     Container(
                       width: 390,
                       child: GestureDetector(
-                        onTap: () async{
+                        onTap: () async {
                           DateTime? pickedDate = await showDatePicker(
-                            
-                      context: context,
-                      
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(
-                          2000), // DateTime.now() - not to allow choosing before today.
-                      lastDate: DateTime(2101),
-                      builder: (context, child) {
-      return Theme(
-        data: Theme.of(context).copyWith(
-          colorScheme: ColorScheme.light(
-            primary: Colors.black, // <-- SEE HERE
-            onPrimary: Colors.white, // <-- SEE HERE
-            onSurface: Colors.black, // <-- SEE HERE
-          ),
-          textButtonTheme: TextButtonThemeData(
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.black, // button text color
-            ),
-          ),
-        ),
-        child: child!,
-      );
-    },
-                    );
+                            context: context,
 
-                    if (pickedDate != null) {
-                      String formatdate =
-                          DateFormat('yyyy-MM-dd').format(pickedDate);
-                      setState(() {
-                        dueDate.text = formatdate;
-                      });
-                    }
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(
+                                2000), // DateTime.now() - not to allow choosing before today.
+                            lastDate: DateTime(2101),
+                            builder: (context, child) {
+                              return Theme(
+                                data: Theme.of(context).copyWith(
+                                  colorScheme: ColorScheme.light(
+                                    primary: Colors.black, // <-- SEE HERE
+                                    onPrimary: Colors.white, // <-- SEE HERE
+                                    onSurface: Colors.black, // <-- SEE HERE
+                                  ),
+                                  textButtonTheme: TextButtonThemeData(
+                                    style: TextButton.styleFrom(
+                                      foregroundColor:
+                                          Colors.black, // button text color
+                                    ),
+                                  ),
+                                ),
+                                child: child!,
+                              );
+                            },
+                          );
+
+                          if (pickedDate != null) {
+                            String formatdate =
+                                DateFormat('yyyy-MM-dd').format(pickedDate);
+                            setState(() {
+                              dueDate.text = formatdate;
+                            });
+                          }
                         },
                         child: AbsorbPointer(
                           child: TextField(
-                             cursorColor: Colors.black,
-                       
+                            cursorColor: Colors.black,
                             controller: dueDate,
                             decoration: InputDecoration(
                               hintText: "Required",
-                          hintStyle: TextStyle(fontStyle: FontStyle.italic,fontSize: 14),
+                              hintStyle: TextStyle(
+                                  fontStyle: FontStyle.italic, fontSize: 14),
                               suffixIcon: GestureDetector(
                                   onTap: () {
                                     clearField(dueDate);
@@ -220,7 +219,7 @@ class _TasksState extends State<Tasks> {
                                     Icons.cancel,
                                     color: Colors.grey,
                                   )),
-                                              
+
                               prefixIcon: Icon(
                                 Icons.calendar_month,
                                 color: Colors.grey,
@@ -264,7 +263,7 @@ class _TasksState extends State<Tasks> {
                                   borderRadius: BorderRadius.circular(20)),
                               backgroundColor: Colors.black,
                             ));
-                             clearField(title);
+                            clearField(title);
                             clearField(description);
                             clearField(dueDate);
                             Navigator.pop(context);
@@ -295,25 +294,26 @@ class _TasksState extends State<Tasks> {
 
   String token =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InN0cmluZyIsImVtYWlsIjoiOCIsIm5iZiI6MTY5NTE4ODU0MCwiZXhwIjoxNjk1MjI0NTQwLCJpYXQiOjE2OTUxODg1NDAsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTA0MiIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTA0MiJ9.IM8VVfVYxRZK14JNBfXDFQuXfgNLSE1udOdVS-Mtj9Q";
+  int _selectedIndex = 0; // Initially select the first tab
+
+  final List<String> _tabs = ["Pending", "Completed"];
   late DateTime today;
-  String day='';
-  String date='';
-  String month='';
-  String year='';
+  String day = '';
+  String date = '';
+  String month = '';
+  String year = '';
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _loadtasks();
-today=DateTime.now();
-day=DateFormat('EEEE').format(today);
- date=DateFormat('d').format(today);
- month=DateFormat('MMMM').format(today);
- year=DateFormat('yyyy').format(today);
-print(day+date+month+year);
-
+    today = DateTime.now();
+    day = DateFormat('EEEE').format(today);
+    date = DateFormat('d').format(today);
+    month = DateFormat('MMMM').format(today);
+    year = DateFormat('yyyy').format(today);
+//print(day+date+month+year);
   }
-  
 
   Future _loadtasks() async {
     try {
@@ -331,29 +331,36 @@ print(day+date+month+year);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       backgroundColor: Colors.white,
       body: Stack(
         children: [
           Positioned.fill(
-        child: Image.asset(
-          "images/bg3.jpg", // Replace with your image asset path
-          fit: BoxFit.cover, // Cover the entire stack with the image
-        ),
-      ),
-      Positioned(
-        top: 20,
-        left: 140,
-        child: Container(
-          child: IconButton(onPressed: (){}, icon:Icon(Icons.person,color: Colors.white,size: 60,)),
-          height: 100,
-          width: 100,
-          decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.5),
-            borderRadius: BorderRadius.circular(20),
+            child: Image.asset(
+              "images/bg3.jpg", // Replace with your image asset path
+              fit: BoxFit.cover, // Cover the entire stack with the image
+            ),
           ),
-        ),
-      ),
+          Positioned(
+            top: 20,
+            left: 140,
+            child: Container(
+              child: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(
+                    Icons.logout,
+                    color: const Color.fromARGB(255, 244, 67, 54),
+                    size: 60,
+                  )),
+              height: 100,
+              width: 100,
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+          ),
           Positioned(
             top: 20,
             left: 0,
@@ -362,30 +369,47 @@ print(day+date+month+year);
               child: Container(
                 height: 100,
                 width: 900,
-               
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Colors.white.withOpacity(0.7)
-                ),
+                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.white.withOpacity(0.7)),
                 child: Row(
                   children: [
-                    SizedBox(width: 50,),
+                    SizedBox(
+                      width: 50,
+                    ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        
-                        Text("Hello Eshaan!",style: TextStyle(fontFamily: "Myfont",fontSize: 35),),
-                        Text("It's good to see you again.",style: TextStyle(fontFamily: "Myfont",fontSize: 10,color: Colors.purple))
+                        Text(
+                          "Hello Eshaan!",
+                          style: TextStyle(
+                              fontFamily: "Myfont",
+                              fontSize: 35,
+                              color: Colors.black),
+                        ),
+                        Text("It's good to see you again.",
+                            style: TextStyle(
+                                fontFamily: "Myfont",
+                                fontSize: 10,
+                                color: Colors.purple))
                       ],
                     ),
-                    SizedBox(width: 60,),
+                    SizedBox(
+                      width: 60,
+                    ),
                     Container(
                       height: 100,
                       width: 0.5,
                       color: Colors.black.withOpacity(0.3),
                     ),
-                     SizedBox(width: 110,),
-                    Text("TASK DASHBOARD",style: TextStyle(fontFamily: "Myfont",fontSize: 40,fontWeight: FontWeight.bold))
+                    SizedBox(
+                      width: 110,
+                    ),
+                    Text("TASK DASHBOARD",
+                        style: TextStyle(
+                            fontFamily: "Myfont",
+                            fontSize: 40,
+                            fontWeight: FontWeight.bold))
                   ],
                 ),
               ),
@@ -400,13 +424,76 @@ print(day+date+month+year);
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(day,style: TextStyle(fontFamily: "Myfont",fontWeight: FontWeight.w300,fontSize: 15),),
-                  Text(date+" "+month+" "+year,style: TextStyle(fontFamily: "Myfont",fontWeight: FontWeight.w300,fontSize: 15),),
+                  Text(
+                    day,
+                    style: TextStyle(
+                        fontFamily: "Myfont",
+                        fontWeight: FontWeight.w300,
+                        fontSize: 15),
+                  ),
+                  Text(
+                    date + " " + month + " " + year,
+                    style: TextStyle(
+                        fontFamily: "Myfont",
+                        fontWeight: FontWeight.w300,
+                        fontSize: 15),
+                  ),
                 ],
               ),
             ),
-            ),
-        
+          ),
+          Positioned(
+              top: 145,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Container(
+                      height: 500,
+                      width: 1200,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(0),
+                        color: Colors.white,
+                      ),
+                      child: DefaultTabController(
+                        length: _tabs.length,
+                        initialIndex: _selectedIndex,
+                        child: Column(
+                          children: [
+                            TabBar(
+                              tabs: _tabs.map((String tabTitle) {
+                                return Tab(text: tabTitle,);
+                              }).toList(),
+                              labelColor: Colors.black,
+                              unselectedLabelColor: Colors.black,
+                              labelStyle: TextStyle(fontFamily: "Myfont"),
+                              unselectedLabelStyle:TextStyle(fontFamily: "Myfont"), 
+                             padding: EdgeInsets.all(3),
+                             indicator: BoxDecoration(
+                              
+                              borderRadius: BorderRadius.circular(20),
+                              color: const Color.fromARGB(255, 22, 101, 24).withOpacity(0.2),
+                             ),
+                            ),
+                            Expanded(
+                                child: TabBarView(
+                              children: [
+                                Container(
+                                  color: Colors.white,
+                                  child: Center(child:Text("These are pending tasks")),
+                                ),
+                                Container(
+                                  color: Colors.white,
+                                  child: Center(child:Text("These are completed tasks")),
+                                )
+                              ],
+                            ))
+                          ],
+                        ),
+                      )),
+                ),
+              )),
           // Padding(
           //   padding: const EdgeInsets.all(100.0),
           //   child: ListView.builder(
@@ -444,7 +531,7 @@ print(day+date+month+year);
           //   ),
           // ),
           Positioned(
-              top: 650,
+              top: 670,
               left: 0,
               right: 0,
               child: Center(
@@ -455,39 +542,45 @@ print(day+date+month+year);
                     // borderRadius: BorderRadius.circular(100)
                     ),
                 child: ElevatedButton(
-                  
-                    style: ElevatedButton.styleFrom(
+                  style: ElevatedButton.styleFrom(
                       splashFactory: NoSplash.splashFactory,
-                        //backgroundColor: Color.fromARGB(195, 3, 4, 46),
-                        backgroundColor: Colors.black.withOpacity(0.7),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20))),
-                    onPressed: () {
-                      _showDialog(context);
-                    },
-                    child: Container(
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text("Create Task",style: TextStyle(fontFamily: "Myfont",fontSize: 26),),
-                          SizedBox(width: 30,),
-                          Container(
-                            decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white
-                ),
-                            height: 55,
-                            width: 55,
+                      //backgroundColor: Color.fromARGB(195, 3, 4, 46),
+                      backgroundColor: Colors.black.withOpacity(0.7),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20))),
+                  onPressed: () {
+                    _showDialog(context);
+                  },
+                  child: Container(
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          "Create Task",
+                          style: TextStyle(fontFamily: "Myfont", fontSize: 26),
+                        ),
+                        SizedBox(
+                          width: 30,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.white),
+                          height: 55,
+                          width: 55,
                           //  color: Colors.white,
-                            child: Icon(Icons.add,color: Colors.black,size: 50,),
-                          )
-                          
-                        ],
-                      ),
+                          child: Icon(
+                            Icons.add,
+                            color: Colors.black,
+                            size: 50,
+                          ),
+                        )
+                      ],
                     ),
-                    ),
+                  ),
+                ),
               )))
         ],
       ),
