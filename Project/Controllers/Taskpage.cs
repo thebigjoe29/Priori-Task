@@ -49,7 +49,7 @@ namespace Project.Controllers
         public IActionResult GetUserTask()
         {
             
-            var userTasks = _context.tasks.Where(task => task.userId.ToString() == tokenuserId).ToList();
+            var userTasks = _context.tasks.Where(task => task.userId.ToString() == tokenuserId && task.iscompleted==false).ToList();
             if (userTasks != null)
             {
                 return Ok(userTasks);
@@ -57,7 +57,7 @@ namespace Project.Controllers
            
             else
             {
-                return BadRequest("no records");
+                return BadRequest("No tasks to show. It looks like you have the day off!");
             }
             
 
@@ -106,6 +106,17 @@ namespace Project.Controllers
             record.iscompleted=true;
             _context.SaveChanges();
             return Ok(record.iscompleted);
+        }
+        [HttpGet("getUserCompletedtask")]
+        [Authorize]
+        public IActionResult getUserCompletedTask(){
+            var completedTasks = _context.tasks.Where(task => task.userId.ToString() == tokenuserId && task.iscompleted==true).ToList();
+            if(completedTasks!=null){
+                return Ok(completedTasks);
+            }
+            else{
+                return BadRequest("You have not completed any tasks");
+            }
         }
         
     }
