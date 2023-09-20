@@ -98,6 +98,15 @@ namespace Project.Controllers
             _context.SaveChanges();
             return Ok(record);
         }
+
+        [HttpPut("completeUserTask")]
+        [Authorize]
+        public IActionResult complete(int id){
+            var record=_context.tasks.Find(id);
+            record.iscompleted=true;
+            _context.SaveChanges();
+            return Ok(record.iscompleted);
+        }
         
     }
 }
