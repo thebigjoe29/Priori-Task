@@ -49,7 +49,7 @@ namespace Project.Controllers
         public IActionResult GetUserTask()
         {
             
-            var userTasks = _context.tasks.Where(task => task.userId.ToString() == tokenuserId && task.iscompleted==false).ToList();
+            var userTasks = _context.tasks.Where(task => task.userId.ToString() == tokenuserId && task.iscompleted==false).OrderByDescending(i=>i.taskId).ToList();
             if (userTasks != null)
             {
                 return Ok(userTasks);
@@ -110,7 +110,7 @@ namespace Project.Controllers
         [HttpGet("getUserCompletedtask")]
         [Authorize]
         public IActionResult getUserCompletedTask(){
-            var completedTasks = _context.tasks.Where(task => task.userId.ToString() == tokenuserId && task.iscompleted==true).ToList();
+            var completedTasks = _context.tasks.Where(task => task.userId.ToString() == tokenuserId && task.iscompleted==true).OrderByDescending(i=>i.taskId).ToList();
             if(completedTasks!=null){
                 return Ok(completedTasks);
             }

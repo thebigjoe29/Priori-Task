@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'networking_api.dart';
@@ -261,12 +262,15 @@ class _TasksState extends State<Tasks> {
                               duration: Duration(seconds: 2),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20)),
-                              backgroundColor: Colors.black,
+                              backgroundColor: Colors.lightGreen,
                             ));
                             clearField(title);
                             clearField(description);
                             clearField(dueDate);
                             Navigator.pop(context);
+                            setState(() {
+                              _loadtasks();
+                            });
                           }
                         },
                         style: ElevatedButton.styleFrom(
@@ -291,9 +295,10 @@ class _TasksState extends State<Tasks> {
       },
     );
   }
-
+ PageController _pageController = PageController(initialPage: 0);
+  int _currentPage = 0;
   String token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InN0cmluZyIsImVtYWlsIjoiOCIsIm5iZiI6MTY5NTE4ODU0MCwiZXhwIjoxNjk1MjI0NTQwLCJpYXQiOjE2OTUxODg1NDAsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTA0MiIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTA0MiJ9.IM8VVfVYxRZK14JNBfXDFQuXfgNLSE1udOdVS-Mtj9Q";
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InN0cmluZyIsImVtYWlsIjoiOCIsIm5iZiI6MTY5NTI3NjA5NiwiZXhwIjoxNjk1MzEyMDk2LCJpYXQiOjE2OTUyNzYwOTYsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTA0MiIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTA0MiJ9.NDRw17WUkm-g6XvZXK-YtqYuTCIYQC8K-xxxCbkMGHE";
   int _selectedIndex = 0; // Initially select the first tab
 
   final List<String> _tabs = ["Pending", "Completed"];
@@ -341,26 +346,41 @@ class _TasksState extends State<Tasks> {
             ),
           ),
           Positioned(
-            top: 20,
-            left: 140,
-            child: Container(
+            top: 0,
+            left: 0,
+            child: Tooltip(
+              message: "Logout",
               child: IconButton(
+                iconSize: 50,
                   onPressed: () {
                     Navigator.pop(context);
                   },
                   icon: Icon(
                     Icons.logout,
                     color: const Color.fromARGB(255, 244, 67, 54),
-                    size: 60,
+                    
                   )),
-              height: 100,
-              width: 100,
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.3),
-                borderRadius: BorderRadius.circular(20),
-              ),
             ),
           ),
+          Positioned(
+            top: 20,
+            
+            left: 90,
+            child: Container(
+              height: 100,
+              width: 200,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.7),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Center(child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Number of active tasks: ",style: TextStyle(fontFamily: "Myfont",fontWeight: FontWeight.bold),),
+                Text(tasks.length.toString(),style: TextStyle(fontFamily: "Myfont",fontWeight: FontWeight.bold,fontSize: 25),),
+                ],
+              )),
+            )),
           Positioned(
             top: 20,
             left: 0,
@@ -391,7 +411,7 @@ class _TasksState extends State<Tasks> {
                             style: TextStyle(
                                 fontFamily: "Myfont",
                                 fontSize: 10,
-                                color: Colors.purple))
+                                color: Colors.black))
                       ],
                     ),
                     SizedBox(
@@ -417,10 +437,14 @@ class _TasksState extends State<Tasks> {
           ),
           Positioned(
             top: 20,
-            right: 70,
+            right: 90,
             child: Container(
               height: 100,
               width: 200,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.7),
+                borderRadius: BorderRadius.circular(20),
+              ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -453,7 +477,7 @@ class _TasksState extends State<Tasks> {
                       height: 500,
                       width: 1200,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(0),
+                        // borderRadius: BorderRadius.circular(0),
                         color: Colors.white,
                       ),
                       child: DefaultTabController(
@@ -463,29 +487,168 @@ class _TasksState extends State<Tasks> {
                           children: [
                             TabBar(
                               tabs: _tabs.map((String tabTitle) {
-                                return Tab(text: tabTitle,);
+                                return Tab(
+                                  text: tabTitle,
+                                );
                               }).toList(),
                               labelColor: Colors.black,
                               unselectedLabelColor: Colors.black,
                               labelStyle: TextStyle(fontFamily: "Myfont"),
-                              unselectedLabelStyle:TextStyle(fontFamily: "Myfont"), 
-                             padding: EdgeInsets.all(3),
-                             indicator: BoxDecoration(
-                              
-                              borderRadius: BorderRadius.circular(20),
-                              color: const Color.fromARGB(255, 22, 101, 24).withOpacity(0.2),
-                             ),
+                              unselectedLabelStyle:
+                                  TextStyle(fontFamily: "Myfont"),
+                              padding: EdgeInsets.all(3),
+                              indicator: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: Color.fromARGB(255, 17, 164, 78)
+                                    .withOpacity(0.5),
+                              ),
                             ),
                             Expanded(
                                 child: TabBarView(
                               children: [
                                 Container(
                                   color: Colors.white,
-                                  child: Center(child:Text("These are pending tasks")),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: ListView.builder(
+                                      physics: BouncingScrollPhysics(),
+                                      itemCount: tasks.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        Taskobjects task = tasks[index];
+                                        DateTime dueDate =
+                                            DateTime.parse(task.dueDate);
+                                        var formatteddate =
+                                            DateFormat('dd-MM-yyyy')
+                                                .format(dueDate);
+                                        return FractionallySizedBox(
+                                          widthFactor: 0.9,
+                                          child: Container(
+                                            height: 120,
+
+                                            margin: EdgeInsets.all(
+                                                10), // Add margin for spacing between tasks
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  Colors.black.withOpacity(0.3),
+                                              borderRadius:
+                                                  BorderRadius.circular(30),
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(10.0),
+                                              child: ListView(
+                                                children:[ Column(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                  children: [
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.start,
+                                                      children: [
+                                                        SizedBox(width: 5,),
+                                                        Text(
+                                                          task.title.toUpperCase(),
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                                  "Myfont",
+                                                                  fontSize: 20,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.end,
+                                                      children: [
+                                                        Container(
+                                                            height: 40,
+                                                            width: 40,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color: Colors.green
+                                                                  .withOpacity(
+                                                                      0.8),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                            ),
+                                                            child: IconButton(
+                                                                onPressed: () {},
+                                                                icon: Icon(
+                                                                  Icons.done,
+                                                                  color: Colors
+                                                                      .white,
+                                                                ))),
+                                                                SizedBox(width: 10,),
+                                                        Container(
+                                                            height: 40,
+                                                            width: 40,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color: Colors.blue
+                                                                  .withOpacity(
+                                                                      0.5),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                            ),
+                                                            child: IconButton(
+                                                                onPressed: () {},
+                                                                icon: Icon(
+                                                                  Icons.edit,
+                                                                  color: Colors.white,
+                                                                ))),
+                                                                SizedBox(width: 10,),
+                                                        Container(
+                                                            height: 40,
+                                                            width: 40,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color: Colors.red
+                                                                  .withOpacity(
+                                                                      0.8),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                            ),
+                                                            child: IconButton(
+                                                                onPressed: () {},
+                                                                icon: Icon(
+                                                                  Icons
+                                                                      .delete_outlined,
+                                                                  color:
+                                                                      Colors.white,
+                                                                ))),
+                                              
+                                              
+                                                            
+                                                      ],
+                                                    ),
+                                                      Row(
+                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                children: [
+                                                                  Text(task.description,style: TextStyle(fontFamily:"Myfont" ),)
+                                                                ],
+                                                              )
+                                                  ],
+                                                )],
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
                                 ),
                                 Container(
                                   color: Colors.white,
-                                  child: Center(child:Text("These are completed tasks")),
+                                  child: Center(
+                                      child: Text("These are completed tasks")),
                                 )
                               ],
                             ))
@@ -494,42 +657,6 @@ class _TasksState extends State<Tasks> {
                       )),
                 ),
               )),
-          // Padding(
-          //   padding: const EdgeInsets.all(100.0),
-          //   child: ListView.builder(
-          //     physics: BouncingScrollPhysics(),
-          //     itemCount: tasks.length,
-          //     itemBuilder: (BuildContext context, int index) {
-          //       Taskobjects task = tasks[index];
-          //       DateTime dueDate = DateTime.parse(task.dueDate);
-          //       var formatteddate = DateFormat('dd-MM-yyyy').format(dueDate);
-          //       return FractionallySizedBox(
-          //         widthFactor: 0.8,
-          //         child: Container(
-          //           height: 80,
-          //           // width: 200,
-          //           // padding: EdgeInsets.all(5),
-          //           margin: EdgeInsets.all(
-          //               10), // Add margin for spacing between tasks
-          //           decoration: BoxDecoration(
-          //             color: Colors.white,
-          //             borderRadius:
-          //                 BorderRadius.circular(20), // Add rounded corners
-          //             boxShadow: [
-          //               // BoxShadow(
-          //               //   color: Colors.grey.withOpacity(0.5), // Add shadow color
-          //               //   spreadRadius: 3,
-          //               //   blurRadius: 5,
-          //               //   offset: Offset(0, 3), // Add shadow offset
-          //               // ),
-          //             ],
-          //           ),
-          //           child: Text(task.description,style: TextStyle(fontFamily: "Myfont",fontWeight: FontWeight.bold),),
-          //         ),
-          //       );
-          //     },
-          //   ),
-          // ),
           Positioned(
               top: 670,
               left: 0,
