@@ -12,8 +12,13 @@ String urlDeleteTask="http://localhost:5042/Task/deleteUserTask";
 String urlundo="http://localhost:5042/Task/undoCompletedTask";
 var token;
 var message;
-var name;
+var username;
+class UserData {
+  final String logintoken;
+  final String username;
 
+  UserData({required this.logintoken, required this.username});
+}
 class signupstate {
   final success;
   final data;
@@ -82,8 +87,8 @@ Future authenticateUser(String user, String pass) async {
     if (response.statusCode == 200) {
       token = jsonDecode(data)["token"];
       message = jsonDecode(data)["message"];
-      name = jsonDecode(data)["name"];
-      Authentication authobj = Authentication(token, message, name);
+      username = jsonDecode(data)["name"];
+      Authentication authobj = Authentication(token, message, username);
       return authobj;
     } else {
       return data;
@@ -234,29 +239,6 @@ void main() async {
       25);
   print(poop);
 }
-// void main()async{
-//   String poop="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InN0cmluZyIsImVtYWlsIjoiOCIsIm5iZiI6MTY5NTA3MTYwMCwiZXhwIjoxNjk1MTA3NjAwLCJpYXQiOjE2OTUwNzE2MDAsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTA0MiIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTA0MiJ9.a-JfXbfL3YTRIWIvdvlyesDZrZKtHyf1IPt8hmaLZ1E";
-//   DateTime datetime = DateTime(2003, 05, 29);
 
-//   var jadu= await addTask(poop, "title", "description",datetime);
-//   print(jadu);
-// }
-
-// void main () async{
-// List <Taskobjects> tasks=[];
-// var result=await getTasks("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InEiLCJlbWFpbCI6IjciLCJuYmYiOjE2OTQ0MjMxMDYsImV4cCI6MTY5NDQyNjcwNiwiaWF0IjoxNjk0NDIzMTA2LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwNDIiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwNDIifQ.KfdqxHWAGHU4o-mcl0qlnJ8BC2WyCmm6DIudA2dgOQg");
-// if(result is List<Taskobjects>){
-//   tasks=result;
-// }
-// for (var task in tasks) {
-//     print("Task ID: ${task.taskId}");
-//     print("Title: ${task.title}");
-//     print("Description: ${task.description}");
-//     DateTime dueDate = DateTime.parse(task.dueDate);
-//     var formatteddate=DateFormat('dd-MM-yyyy').format(dueDate);
-//     print("Due Date: "+formatteddate);
-//     print("--------------");
-//   }
-// }
 
 

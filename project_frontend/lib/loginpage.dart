@@ -28,28 +28,7 @@ class _loginpageState extends State<loginpage> {
   var firstname;
   bool isAuthentication = false;
   bool showMessage = false;
-  void showToast(String poop) {
-    Fluttertoast.showToast(
-      msg: poop,
-      toastLength: Toast.LENGTH_LONG, // Duration of the toast (short or long)
-      gravity: ToastGravity.CENTER_LEFT, // Toast position (top, center, bottom)
-      //timeInSecForIosWeb: 1, // Duration for iOS (in seconds)
-      // backgroundColor: Colors.black.withOpacity(0.8), // Background color
-      // textColor: Colors.white, // Text color
-      // fontSize: 16.0, // Font size
-    );
-  }
 
-  // void showMessagefunc() {
-  //   setState(() {
-  //     showMessage = !showMessage;
-  //   });
-  //   Timer(Duration(seconds: 3), () {
-  //     setState(() {
-  //       showMessage = !showMessage;
-  //     });
-  //   });
-  // }
 
   @override
   void initState() {
@@ -57,7 +36,7 @@ class _loginpageState extends State<loginpage> {
     super.initState();
     isAuthentication = false;
   }
-
+  bool isLoading=false;
 //Color.fromARGB(190, 1, 23, 33)
   @override
   Widget build(BuildContext context) {
@@ -65,6 +44,12 @@ class _loginpageState extends State<loginpage> {
       backgroundColor: Colors.lightGreen,
       body: Stack(
         children: [
+          Positioned.fill(
+            child: Image.asset(
+              "images/bg4.jpg", // Replace with your image asset path
+              fit: BoxFit.cover, // Cover the entire stack with the image
+            ),
+          ),
           Positioned(
               top: 20,
               left: 0,
@@ -85,7 +70,7 @@ class _loginpageState extends State<loginpage> {
                   Icon(
                     Icons.task_alt,
                     size: 50,
-                    color: Colors.teal,
+                    color: Colors.white,
                   )
                 ],
               )),
@@ -217,25 +202,34 @@ class _loginpageState extends State<loginpage> {
                   splashFactory: NoSplash.splashFactory,
                   minimumSize: Size(20, 50),
                   visualDensity: VisualDensity.comfortable,
-                  backgroundColor: Colors.black.withOpacity(0.5),
+                  backgroundColor: Colors.green,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(18))),
+                      borderRadius: BorderRadius.all(Radius.circular(30))),
                 ),
                 onPressed: () async {
+                  setState(() {
+                    isLoading=!isLoading;
+                  });
+                  
                   result = await authenticateUser(
                       usernamecontroller.text, passwordcontroller.text);
                   //showMessagefunc();
-
+                  await Future.delayed(Duration(seconds: 1));
                   setState(() {
                     if (result is Authentication) {
+                      isLoading=!isLoading;
                       isAuthentication = true;
                       logintoken = result.Token;
                       firstname = result.Name;
                     } else {
                       isAuthentication = false;
+                      setState(() {
+                         isLoading=!isLoading;
+                      });
+                     
                     }
                   });
-                  //showToast("gattu");
+                   
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: Center(child: Text(
                             isAuthentication
@@ -249,11 +243,17 @@ class _loginpageState extends State<loginpage> {
                     backgroundColor: Colors.black,
 
                   ));
-                  // if (isAuthentication && logintoken != null) {
-                  //   Get.toNamed("/tasks", arguments: logintoken);
-                  // }
+                  
+                  if (isAuthentication && logintoken != null) {
+                     UserData userData = UserData(logintoken: logintoken, username: username);
+                    Get.toNamed("/tasks", arguments: userData,);
+                  }
                 },
-                child: Text(
+                child: isLoading? Container(
+                  height: 15,
+                  width: 15,
+                  child: CircularProgressIndicator(strokeWidth: 2,color: Colors.white,)):
+                Text(
                   "LOGIN",
                   style: TextStyle(
                       fontFamily: 'Myfont',

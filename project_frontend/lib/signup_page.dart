@@ -9,10 +9,14 @@ class signup extends StatefulWidget {
   const signup({super.key});
 
   @override
+  
   State<signup> createState() => _signupState();
 }
 
+
 class _signupState extends State<signup> {
+  @override
+  
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController firstname = TextEditingController();
@@ -60,13 +64,20 @@ String passwordStrengthfunc (String password) {
     return "Strong";
   }
 }
- 
+ bool isLoading=false;
   @override
+ 
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.lightGreen,
       body: Stack(
         children: [
+           Positioned.fill(
+            child: Image.asset(
+              "images/bg4.jpg", // Replace with your image asset path
+              fit: BoxFit.cover, // Cover the entire stack with the image
+            ),
+          ),
           Positioned(
             top: 10,
             left: 10,
@@ -248,9 +259,9 @@ String passwordStrengthfunc (String password) {
                   splashFactory: NoSplash.splashFactory,
                   minimumSize: Size(20, 50),
                   visualDensity: VisualDensity.comfortable,
-                  backgroundColor: Colors.black.withOpacity(0.5),
+                  backgroundColor: Colors.green,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(18))),
+                      borderRadius: BorderRadius.all(Radius.circular(30))),
                 ),
                 onPressed: () async {
                   result = await signupUser(
@@ -259,9 +270,11 @@ String passwordStrengthfunc (String password) {
                         
                         message=result.data;
                         success=result.success;
+                        isLoading=!isLoading;
                         
                       });
                       
+                      await Future.delayed(Duration(seconds: 1));
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: Center(child: Text(result.data,style: TextStyle(fontFamily: "Myfont"),)),
                     behavior: SnackBarBehavior.floating,
@@ -270,12 +283,25 @@ String passwordStrengthfunc (String password) {
                     backgroundColor: Colors.black,
 
                   ));
+                  setState(() {
+                    isLoading=!isLoading;
+                  });
                   if(result.success==true){
+                    
                      await Future.delayed(Duration(seconds: 2));
                       Get.toNamed("/");}
+                      // else{
+                      //   setState(() {
+                      //     isLoading=!isLoading;
+                      //   });
+                        
+                      // }
                       
                 },
-                child: Text("SIGN UP!", style: TextStyle(
+                child: isLoading? Container(
+                  height: 15,
+                  width: 15,
+                  child: CircularProgressIndicator(strokeWidth: 2,color: Colors.white,)):Text("SIGN UP!", style: TextStyle(
                       fontFamily: 'Myfont',
                       color: Colors.white,
                       fontWeight: FontWeight.bold)),

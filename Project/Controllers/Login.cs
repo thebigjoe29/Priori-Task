@@ -90,7 +90,7 @@ namespace Project.Controllers
                 {
 
                     var token = GenerateJwtToken(loginObj.username, configuration, userObj.userId);
-                    return Ok(new { Token = token, Message = "You have logged in successfully! Welcome back "+loginObj.username.ToUpper(),Name=userObj.firstname});
+                    return Ok(new { Token = token, Message = "You have logged in successfully! Welcome back "+loginObj.username.ToUpper(),Name=userObj.username});
                 }
                 else
                 {

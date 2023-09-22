@@ -9,8 +9,9 @@ import 'networking_api.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 
 class Tasks extends StatefulWidget {
+final UserData userData;
   //final logintoken;
-  Tasks({Key? key}) : super(key: key);
+  Tasks({Key? key, required this.userData}) : super(key: key);
 
   @override
   State<Tasks> createState() => _TasksState();
@@ -19,6 +20,7 @@ class Tasks extends StatefulWidget {
 class _TasksState extends State<Tasks> {
   List<Taskobjects> tasks = [];
   List<Taskobjects> tasksCompleted = [];
+  
   var result;
   var result_completed;
   TextEditingController title = TextEditingController();
@@ -300,8 +302,9 @@ class _TasksState extends State<Tasks> {
 
   PageController _pageController = PageController(initialPage: 0);
   int _currentPage = 0;
-  String token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InN0cmluZyIsImVtYWlsIjoiOCIsIm5iZiI6MTY5NTM2NDYwMywiZXhwIjoxNjk1NDAwNjAzLCJpYXQiOjE2OTUzNjQ2MDMsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTA0MiIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTA0MiJ9.w7hOtql473_shvAnBVYF6HNRbajR1nKZFElSdYqOa-g";
+ 
+
+      
   int _selectedIndex = 0; // Initially select the first tab
 
   final List<String> _tabs = ["Pending", "Completed"];
@@ -314,6 +317,7 @@ class _TasksState extends State<Tasks> {
   void initState() {
     // TODO: implement initState
     super.initState();
+     
     _loadtasks();
     _loadCompletedTasks();
     today = DateTime.now();
@@ -352,6 +356,8 @@ class _TasksState extends State<Tasks> {
 
   @override
   Widget build(BuildContext context) {
+    String token = widget.userData.logintoken;
+    String username=widget.userData.username;
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
@@ -427,7 +433,7 @@ class _TasksState extends State<Tasks> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Hello Eshaan!",
+                          "Hello "+username+"!",
                           style: TextStyle(
                               fontFamily: "Myfont",
                               fontSize: 35,
@@ -532,13 +538,13 @@ class _TasksState extends State<Tasks> {
                                   ),
                             ),
                             Expanded(
-                                child: TabBarView(
+                                child:TabBarView(
                               children: [
                                 Container(
                                   color: Colors.white,
                                   child: Padding(
                                     padding: const EdgeInsets.all(10.0),
-                                    child: ListView.builder(
+                                    child: tasks.isEmpty? Center(child: Text("To get started, add a new task!",style: TextStyle(fontFamily: "Myfont",fontSize: 20,),)): ListView.builder(
                                       physics: BouncingScrollPhysics(),
                                       itemCount: tasks.length,
                                       itemBuilder:
@@ -774,7 +780,7 @@ class _TasksState extends State<Tasks> {
                                   color: Colors.white,
                                   child: Padding(
                                     padding: const EdgeInsets.all(10.0),
-                                    child: ListView.builder(
+                                    child:  tasksCompleted.isEmpty? Center(child: Text("No tasks completed.",style: TextStyle(fontFamily: "Myfont",fontSize: 20,),)):ListView.builder(
                                       physics: BouncingScrollPhysics(),
                                       itemCount: tasksCompleted.length,
                                       itemBuilder:
