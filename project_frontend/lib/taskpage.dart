@@ -18,7 +18,9 @@ class Tasks extends StatefulWidget {
 
 class _TasksState extends State<Tasks> {
   List<Taskobjects> tasks = [];
+  List<Taskobjects> tasksCompleted = [];
   var result;
+  var result_completed;
   TextEditingController title = TextEditingController();
   TextEditingController description = TextEditingController();
   TextEditingController dueDate = TextEditingController();
@@ -295,10 +297,11 @@ class _TasksState extends State<Tasks> {
       },
     );
   }
- PageController _pageController = PageController(initialPage: 0);
+
+  PageController _pageController = PageController(initialPage: 0);
   int _currentPage = 0;
   String token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InN0cmluZyIsImVtYWlsIjoiOCIsIm5iZiI6MTY5NTI3NjA5NiwiZXhwIjoxNjk1MzEyMDk2LCJpYXQiOjE2OTUyNzYwOTYsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTA0MiIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTA0MiJ9.NDRw17WUkm-g6XvZXK-YtqYuTCIYQC8K-xxxCbkMGHE";
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InN0cmluZyIsImVtYWlsIjoiOCIsIm5iZiI6MTY5NTM2NDYwMywiZXhwIjoxNjk1NDAwNjAzLCJpYXQiOjE2OTUzNjQ2MDMsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTA0MiIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTA0MiJ9.w7hOtql473_shvAnBVYF6HNRbajR1nKZFElSdYqOa-g";
   int _selectedIndex = 0; // Initially select the first tab
 
   final List<String> _tabs = ["Pending", "Completed"];
@@ -312,6 +315,7 @@ class _TasksState extends State<Tasks> {
     // TODO: implement initState
     super.initState();
     _loadtasks();
+    _loadCompletedTasks();
     today = DateTime.now();
     day = DateFormat('EEEE').format(today);
     date = DateFormat('d').format(today);
@@ -333,6 +337,19 @@ class _TasksState extends State<Tasks> {
     }
   }
 
+  Future _loadCompletedTasks() async {
+    try {
+      result_completed = await getTasksCompleted(token);
+      if (result_completed is List<Taskobjects>) {
+        setState(() {
+          tasksCompleted = result_completed;
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -341,7 +358,7 @@ class _TasksState extends State<Tasks> {
         children: [
           Positioned.fill(
             child: Image.asset(
-              "images/bg3.jpg", // Replace with your image asset path
+              "images/bg4.jpg", // Replace with your image asset path
               fit: BoxFit.cover, // Cover the entire stack with the image
             ),
           ),
@@ -351,36 +368,45 @@ class _TasksState extends State<Tasks> {
             child: Tooltip(
               message: "Logout",
               child: IconButton(
-                iconSize: 50,
+                  iconSize: 50,
                   onPressed: () {
                     Navigator.pop(context);
                   },
                   icon: Icon(
                     Icons.logout,
-                    color: const Color.fromARGB(255, 244, 67, 54),
-                    
+                    color: Color.fromARGB(255, 252, 47, 32),
                   )),
             ),
           ),
           Positioned(
-            top: 20,
-            
-            left: 90,
-            child: Container(
-              height: 100,
-              width: 200,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.7),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Center(child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Number of active tasks: ",style: TextStyle(fontFamily: "Myfont",fontWeight: FontWeight.bold),),
-                Text(tasks.length.toString(),style: TextStyle(fontFamily: "Myfont",fontWeight: FontWeight.bold,fontSize: 25),),
-                ],
+              top: 20,
+              left: 90,
+              child: Container(
+                height: 100,
+                width: 200,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.7),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Center(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Number of active tasks: ",
+                      style: TextStyle(
+                          fontFamily: "Myfont", fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      tasks.length.toString(),
+                      style: TextStyle(
+                          fontFamily: "Myfont",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 25),
+                    ),
+                  ],
+                )),
               )),
-            )),
           Positioned(
             top: 20,
             left: 0,
@@ -498,10 +524,12 @@ class _TasksState extends State<Tasks> {
                                   TextStyle(fontFamily: "Myfont"),
                               padding: EdgeInsets.all(3),
                               indicator: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: Color.fromARGB(255, 17, 164, 78)
-                                    .withOpacity(0.5),
-                              ),
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: Color.fromARGB(255, 127, 174, 212)
+
+                                  //Color.fromARGB(255, 17, 164, 78)
+                                  //.withOpacity(0.5),
+                                  ),
                             ),
                             Expanded(
                                 child: TabBarView(
@@ -524,119 +552,216 @@ class _TasksState extends State<Tasks> {
                                         return FractionallySizedBox(
                                           widthFactor: 0.9,
                                           child: Container(
-                                            height: 120,
+                                            height: 110,
 
                                             margin: EdgeInsets.all(
                                                 10), // Add margin for spacing between tasks
                                             decoration: BoxDecoration(
-                                              color:
-                                                  Colors.black.withOpacity(0.3),
+                                              color: Colors.grey,
                                               borderRadius:
-                                                  BorderRadius.circular(30),
+                                                  BorderRadius.circular(10),
                                             ),
                                             child: Padding(
                                               padding:
                                                   const EdgeInsets.all(10.0),
                                               child: ListView(
-                                                children:[ Column(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                  children: [
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.start,
-                                                      children: [
-                                                        SizedBox(width: 5,),
-                                                        Text(
-                                                          task.title.toUpperCase(),
-                                                          style: TextStyle(
-                                                              fontFamily:
-                                                                  "Myfont",
-                                                                  fontSize: 20,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.end,
-                                                      children: [
-                                                        Container(
-                                                            height: 40,
-                                                            width: 40,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color: Colors.green
-                                                                  .withOpacity(
-                                                                      0.8),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          10),
-                                                            ),
-                                                            child: IconButton(
-                                                                onPressed: () {},
-                                                                icon: Icon(
-                                                                  Icons.done,
-                                                                  color: Colors
-                                                                      .white,
-                                                                ))),
-                                                                SizedBox(width: 10,),
-                                                        Container(
-                                                            height: 40,
-                                                            width: 40,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color: Colors.blue
-                                                                  .withOpacity(
-                                                                      0.5),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          10),
-                                                            ),
-                                                            child: IconButton(
-                                                                onPressed: () {},
-                                                                icon: Icon(
-                                                                  Icons.edit,
-                                                                  color: Colors.white,
-                                                                ))),
-                                                                SizedBox(width: 10,),
-                                                        Container(
-                                                            height: 40,
-                                                            width: 40,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color: Colors.red
-                                                                  .withOpacity(
-                                                                      0.8),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          10),
-                                                            ),
-                                                            child: IconButton(
-                                                                onPressed: () {},
-                                                                icon: Icon(
-                                                                  Icons
-                                                                      .delete_outlined,
-                                                                  color:
-                                                                      Colors.white,
-                                                                ))),
-                                              
-                                              
-                                                            
-                                                      ],
-                                                    ),
+                                                children: [
+                                                  Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
+                                                    children: [
                                                       Row(
-                                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                                children: [
-                                                                  Text(task.description,style: TextStyle(fontFamily:"Myfont" ),)
-                                                                ],
-                                                              )
-                                                  ],
-                                                )],
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          SizedBox(
+                                                            width: 5,
+                                                          ),
+                                                          Text(
+                                                            task.title
+                                                                .toUpperCase(),
+                                                            style: TextStyle(
+                                                                fontFamily:
+                                                                    "Myfont",
+                                                                fontSize: 20,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .end,
+                                                        children: [
+                                                          Container(
+                                                              height: 40,
+                                                              width: 40,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: Colors
+                                                                    .green
+                                                                    .withOpacity(
+                                                                        0.8),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10),
+                                                              ),
+                                                              child: Tooltip(
+                                                                message: "Complete task",
+                                                                child: IconButton(
+                                                                    onPressed:
+                                                                        () async {
+                                                                   bool tick=await   tickButton(
+                                                                          token,
+                                                                          task.taskId);
+                                                                     if(tick) {
+                                                                      ScaffoldMessenger.of(
+                                                                                context)
+                                                                            .showSnackBar(
+                                                                                SnackBar(
+                                                                          content:
+                                                                              Center(
+                                                                                  child: Text(
+                                                                            "Task completed successfully!",
+                                                                            style:
+                                                                                TextStyle(fontFamily: "Myfont"),
+                                                                          )),
+                                                                          behavior:
+                                                                              SnackBarBehavior.floating,
+                                                                          duration:
+                                                                              Duration(seconds: 2),
+                                                                          shape: RoundedRectangleBorder(
+                                                                              borderRadius:
+                                                                                  BorderRadius.circular(20)),
+                                                                          backgroundColor:
+                                                                              Colors.green,
+                                                                        ));
+                                                                      setState(
+                                                                          () {
+                                                                        _loadtasks();
+                                                                        _loadCompletedTasks();
+                                                                      });}
+                                                                    },
+                                                                    icon: Icon(
+                                                                      Icons.done,
+                                                                      color: Colors
+                                                                          .white,
+                                                                    )),
+                                                              )),
+                                                          SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Container(
+                                                              height: 40,
+                                                              width: 40,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: Colors
+                                                                    .blue
+                                                                    .withOpacity(
+                                                                        0.5),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10),
+                                                              ),
+                                                              child: Tooltip(
+                                                                message: "Edit task",
+                                                                child: IconButton(
+                                                                    onPressed:
+                                                                        () {},
+                                                                    icon: Icon(
+                                                                      Icons.edit,
+                                                                      color: Colors
+                                                                          .white,
+                                                                    )),
+                                                              )),
+                                                          SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Container(
+                                                              height: 40,
+                                                              width: 40,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: Colors
+                                                                    .red
+                                                                    .withOpacity(
+                                                                        0.8),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10),
+                                                              ),
+                                                              child: Tooltip(
+                                                                message: "Delete task",
+                                                                child: IconButton(
+                                                                    onPressed:
+                                                                        () async {
+                                                                      bool
+                                                                          delete =
+                                                                          await deleteUserTask(
+                                                                              token,
+                                                                              task.taskId);
+                                                                      if (delete) {
+                                                                        ScaffoldMessenger.of(
+                                                                                context)
+                                                                            .showSnackBar(
+                                                                                SnackBar(
+                                                                          content:
+                                                                              Center(
+                                                                                  child: Text(
+                                                                            "Task deleted successfully",
+                                                                            style:
+                                                                                TextStyle(fontFamily: "Myfont"),
+                                                                          )),
+                                                                          behavior:
+                                                                              SnackBarBehavior.floating,
+                                                                          duration:
+                                                                              Duration(seconds: 2),
+                                                                          shape: RoundedRectangleBorder(
+                                                                              borderRadius:
+                                                                                  BorderRadius.circular(20)),
+                                                                          backgroundColor:
+                                                                              Colors.red,
+                                                                        ));
+                                                                      }
+                                                                      setState(
+                                                                          () {
+                                                                        _loadtasks();
+                                                                        _loadCompletedTasks();
+                                                                      });
+                                                                    },
+                                                                    icon: Icon(
+                                                                      Icons
+                                                                          .delete_outlined,
+                                                                      color: Colors
+                                                                          .white,
+                                                                    )),
+                                                              )),
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            task.description,
+                                                            style: TextStyle(
+                                                                fontFamily:
+                                                                    "Myfont"),
+                                                          )
+                                                        ],
+                                                      )
+                                                    ],
+                                                  )
+                                                ],
                                               ),
                                             ),
                                           ),
@@ -647,9 +772,207 @@ class _TasksState extends State<Tasks> {
                                 ),
                                 Container(
                                   color: Colors.white,
-                                  child: Center(
-                                      child: Text("These are completed tasks")),
-                                )
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: ListView.builder(
+                                      physics: BouncingScrollPhysics(),
+                                      itemCount: tasksCompleted.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        Taskobjects task_completed =
+                                            tasksCompleted[index];
+                                        DateTime dueDate = DateTime.parse(
+                                            task_completed.dueDate);
+                                        var formatteddate =
+                                            DateFormat('dd-MM-yyyy')
+                                                .format(dueDate);
+                                        return FractionallySizedBox(
+                                          widthFactor: 0.9,
+                                          child: Container(
+                                            height: 110,
+
+                                            margin: EdgeInsets.all(
+                                                10), // Add margin for spacing between tasks
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(10.0),
+                                              child: ListView(
+                                                children: [
+                                                  Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          SizedBox(
+                                                            width: 5,
+                                                          ),
+                                                          Text(
+                                                            task_completed.title
+                                                                .toUpperCase(),
+                                                            style: TextStyle(
+                                                                fontFamily:
+                                                                    "Myfont",
+                                                                fontSize: 20,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .end,
+                                                        children: [
+                                                          SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Container(
+                                                            height: 40,
+                                                            width: 40,
+                                                            decoration:
+                                                                  BoxDecoration(
+                                                                color: Colors
+                                                                    .yellow
+                                                                    .withOpacity(
+                                                                        0.8),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10),
+                                                              ),
+                                                              child: Tooltip(
+                                                                message: "Shift to pending",
+                                                                child: IconButton(onPressed: ()async{
+                                                                  bool undo=await undoCompletedTask(token, task_completed.taskId);
+                                                                  if(undo){
+                                                                      ScaffoldMessenger.of(
+                                                                                context)
+                                                                            .showSnackBar(
+                                                                                SnackBar(
+                                                                          content:
+                                                                              Center(
+                                                                                  child: Text(
+                                                                            "Task shifted to pending",
+                                                                            style:
+                                                                                TextStyle(fontFamily: "Myfont"),
+                                                                          )),
+                                                                          behavior:
+                                                                              SnackBarBehavior.floating,
+                                                                          duration:
+                                                                              Duration(seconds: 2),
+                                                                          shape: RoundedRectangleBorder(
+                                                                              borderRadius:
+                                                                                  BorderRadius.circular(20)),
+                                                                          backgroundColor:
+                                                                              Colors.black,
+                                                                        ));
+                                                                        _loadtasks();
+                                                                        _loadCompletedTasks();
+                                                                  }
+                                                                }, icon: Icon(Icons.undo_outlined,color: Colors.white,)),
+                                                              ),
+                                                          ),
+                                                           SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Container(
+                                                              height: 40,
+                                                              width: 40,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: Colors
+                                                                    .red
+                                                                    .withOpacity(
+                                                                        0.8),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10),
+                                                              ),
+                                                              child: Tooltip(
+                                                                message: "Delete task",
+                                                                child: IconButton(
+                                                                    onPressed:
+                                                                        () async {
+                                                                      bool delete = await deleteUserTask(
+                                                                          token,
+                                                                          task_completed
+                                                                              .taskId);
+                                                                      if (delete) {
+                                                                        ScaffoldMessenger.of(
+                                                                                context)
+                                                                            .showSnackBar(
+                                                                                SnackBar(
+                                                                          content:
+                                                                              Center(
+                                                                                  child: Text(
+                                                                            "Task deleted successfully",
+                                                                            style:
+                                                                                TextStyle(fontFamily: "Myfont"),
+                                                                          )),
+                                                                          behavior:
+                                                                              SnackBarBehavior.floating,
+                                                                          duration:
+                                                                              Duration(seconds: 2),
+                                                                          shape: RoundedRectangleBorder(
+                                                                              borderRadius:
+                                                                                  BorderRadius.circular(20)),
+                                                                          backgroundColor:
+                                                                              Colors.red,
+                                                                        ));
+                                                                      }
+                                                              
+                                                                      setState(
+                                                                          () {
+                                                                        _loadtasks();
+                                                                        _loadCompletedTasks();
+                                                                      });
+                                                                    },
+                                                                    icon: Icon(
+                                                                      Icons
+                                                                          .delete_outlined,
+                                                                      color: Colors
+                                                                          .white,
+                                                                    )),
+                                                              )),
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            task_completed
+                                                                .description,
+                                                            style: TextStyle(
+                                                                fontFamily:
+                                                                    "Myfont"),
+                                                          )
+                                                        ],
+                                                      )
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
                               ],
                             ))
                           ],

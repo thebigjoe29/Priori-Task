@@ -107,6 +107,16 @@ namespace Project.Controllers
             _context.SaveChanges();
             return Ok(record.iscompleted);
         }
+
+        [HttpPut("undoCompletedTask")]
+        [Authorize]
+        public IActionResult undo(int id){
+             var record=_context.tasks.Find(id);
+            record.iscompleted=false;
+            _context.SaveChanges();
+            return Ok(record.iscompleted);
+        }
+
         [HttpGet("getUserCompletedtask")]
         [Authorize]
         public IActionResult getUserCompletedTask(){
